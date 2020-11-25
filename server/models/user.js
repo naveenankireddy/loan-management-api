@@ -14,4 +14,4 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 });
-mongoose.model("Agent", userSchema);
+mongoose.model("User", userSchema);
