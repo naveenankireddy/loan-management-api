@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = 5000;
 const { MONGOURI } = require("./keys");
+const cors = require("cors");
+const bp = require("body-parser");
+const passport = require("passport");
 
 //mongodb connection
 mongoose.connect(MONGOURI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -15,11 +18,14 @@ mongoose.connection.on("err", () => {
 });
 
 // models
-require("./models/admin");
-require("./models/agent");
-require("./models/user");
+require("./models/User");
+//middlewares
+app.use(cors());
+app.use(bp.json());
+app.use(passport.initialize());
+
 app.use(express.json());
-app.use(require("./routes/auth"));
+app.use(require("./routes/users"));
 
 app.listen(PORT, () => {
   console.log("Server is started at", PORT, "CC dug dug dug dug dug.......");
