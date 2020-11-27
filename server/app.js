@@ -25,7 +25,7 @@ app.use(bp.json());
 app.use(passport.initialize());
 
 app.use(express.json());
-app.use(require("./routes/users"));
+app.use("/api/users", require("./routes/users"));
 
 app.listen(PORT, () => {
   console.log("Server is started at", PORT, "CC dug dug dug dug dug.......");

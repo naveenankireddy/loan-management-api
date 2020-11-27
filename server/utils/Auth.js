@@ -5,12 +5,12 @@ const User = require("../models/User");
 const { SECRET } = require("../config");
 
 /**
- * @DESC To register the user (ADMIN, SUPER_ADMIN, USER)
+ *  To register the user (ADMIN, SUPER_ADMIN, USER)
  */
-const userRegister = async (userDets, role, res) => {
+const userRegister = async (userDetails, role, res) => {
   try {
     // Validate the username
-    let usernameNotTaken = await validateUsername(userDets.username);
+    let usernameNotTaken = await validateUsername(userDetails.username);
     if (!usernameNotTaken) {
       return res.status(400).json({
         message: `Username is already taken.`,
@@ -19,7 +19,7 @@ const userRegister = async (userDets, role, res) => {
     }
 
     // validate the email
-    let emailNotRegistered = await validateEmail(userDets.email);
+    let emailNotRegistered = await validateEmail(userDetails.email);
     if (!emailNotRegistered) {
       return res.status(400).json({
         message: `Email is already registered.`,
@@ -28,10 +28,10 @@ const userRegister = async (userDets, role, res) => {
     }
 
     // Get the hashed password
-    const password = await bcrypt.hash(userDets.password, 12);
+    const password = await bcrypt.hash(userDetails.password, 12);
     // create a new user
     const newUser = new User({
-      ...userDets,
+      ...userDetails,
       password,
       role,
     });
@@ -51,10 +51,10 @@ const userRegister = async (userDets, role, res) => {
 };
 
 /**
- * @DESC To Login the user (ADMIN, SUPER_ADMIN, USER)
+ *  To Login the user (ADMIN, AGENT, USER)
  */
-const userLogin = async (userCreds, role, res) => {
-  let { username, password } = userCreds;
+const userLogin = async (userCredentials, role, res) => {
+  let { username, password } = userCredentials;
   // First Check if the username is in the database
   const user = await User.findOne({ username });
   if (!user) {
@@ -113,12 +113,12 @@ const validateUsername = async (username) => {
 };
 
 /**
- * @DESC Passport middleware
+ *  Passport middleware
  */
 const userAuth = passport.authenticate("jwt", { session: false });
 
 /**
- * @DESC Check Role Middleware
+ *  Check Role Middleware
  */
 const checkRole = (roles) => (req, res, next) =>
   !roles.includes(req.user.role)

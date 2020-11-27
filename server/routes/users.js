@@ -18,7 +18,7 @@ router.post("/register-admin", async (req, res) => {
   await userRegister(req.body, "admin", res);
 });
 
-// Super Admin Registration Route
+// Agent Registration Route
 router.post("/register-agent", async (req, res) => {
   await userRegister(req.body, "agent", res);
 });
@@ -33,7 +33,7 @@ router.post("/login-admin", async (req, res) => {
   await userLogin(req.body, "admin", res);
 });
 
-// Super Admin Login Route
+// Agent Login Route
 router.post("/login-agent", async (req, res) => {
   await userLogin(req.body, "agent", res);
 });
@@ -63,7 +63,7 @@ router.get(
   }
 );
 
-// Super Admin Protected Route
+// Agent Protected Route
 router.get(
   "agent-protectd",
   userAuth,
@@ -73,7 +73,7 @@ router.get(
   }
 );
 
-// Super Admin Protected Route
+// Admin Protected Route
 router.get(
   "admin-and-agent-protectd",
   userAuth,
