@@ -19,8 +19,8 @@ router.post("/register-admin", async (req, res) => {
 });
 
 // Super Admin Registration Route
-router.post("/register-super-admin", async (req, res) => {
-  await userRegister(req.body, "superadmin", res);
+router.post("/register-agent", async (req, res) => {
+  await userRegister(req.body, "agent", res);
 });
 
 // Users Login Route
@@ -34,8 +34,8 @@ router.post("/login-admin", async (req, res) => {
 });
 
 // Super Admin Login Route
-router.post("/login-super-admin", async (req, res) => {
-  await userLogin(req.body, "superadmin", res);
+router.post("/login-agent", async (req, res) => {
+  await userLogin(req.body, "agent", res);
 });
 
 // Profile Route
@@ -65,21 +65,21 @@ router.get(
 
 // Super Admin Protected Route
 router.get(
-  "/super-admin-protectd",
+  "agent-protectd",
   userAuth,
-  checkRole(["superadmin"]),
+  checkRole(["agent"]),
   async (req, res) => {
-    return res.json("Hello Super Admin");
+    return res.json("Hello admin");
   }
 );
 
 // Super Admin Protected Route
 router.get(
-  "/super-admin-and-admin-protectd",
+  "admin-and-agent-protectd",
   userAuth,
-  checkRole(["superadmin", "admin"]),
+  checkRole(["admin", "agent"]),
   async (req, res) => {
-    return res.json("Super admin and Admin");
+    return res.json("agent and admin");
   }
 );
 
