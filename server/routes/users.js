@@ -1,5 +1,6 @@
 const router = require("express").Router();
 // Bring in the User Registration function
+const { CreateLoan } = require("../models/CreateLoan");
 const {
   userAuth,
   userLogin,

@@ -19,13 +19,18 @@ mongoose.connection.on("err", () => {
 
 // models
 require("./models/User");
+require("./models/CreateLoan");
 //middlewares
 app.use(cors());
 app.use(bp.json());
 app.use(passport.initialize());
 
+//passport config
+require("./middlewares/passport")(passport);
+
 app.use(express.json());
 app.use("/api/users", require("./routes/users"));
+app.use("/api", require("./routes/admin"));
 
 app.listen(PORT, () => {
   console.log("Server is started at", PORT, "CC dug dug dug dug dug.......");

@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
-const User = require("../models/User");
+const mongoose = require("mongoose");
+const User = mongoose.model("User");
 const { SECRET } = require("../config");
 
 /**
- *  To register the user (ADMIN, SUPER_ADMIN, USER)
+ *  To register the user (AGENT,ADMIN, USER)
  */
 const userRegister = async (userDetails, role, res) => {
   try {

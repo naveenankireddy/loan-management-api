@@ -1,4 +1,5 @@
-const User = require("../models/User");
+const mongoose = require("mongoose");
+const User = mongoose.model("User");
 const { SECRET } = require("../config");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 
