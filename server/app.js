@@ -20,6 +20,7 @@ mongoose.connection.on("err", () => {
 // models
 require("./models/User");
 require("./models/CreateLoan");
+require("./models/ApplyLoan");
 //middlewares
 app.use(cors());
 app.use(bp.json());

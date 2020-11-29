@@ -1,6 +1,7 @@
-const router = require("express").Router();
-// Bring in the User Registration function
-const { CreateLoan } = require("../models/CreateLoan");
+const express = require("express");
+const router = express.Router();
+const mongoose = require("mongoose");
+const ApplyLoan = mongoose.model("ApplyLoan");
 const {
   userAuth,
   userLogin,
@@ -42,6 +43,28 @@ router.post("/login-agent", async (req, res) => {
 // Profile Route
 router.get("/profile", userAuth, async (req, res) => {
   return res.json(serializeUser(req.user));
+});
+//user apply loan
+router.post("/loan/apply", userAuth, checkRole(["user"]), (req, res) => {
+  const { contact, aadhar, address } = req.body;
+  if (!contact || !aadhar || !address) {
+    return res.status(422).json({ error: "Please provide all fileds" });
+  }
+  req.user.password = undefined;
+  const applyLoan = new ApplyLoan({
+    contact,
+    aadhar,
+    address,
+    createdBy: req.user,
+  });
+  applyLoan
+    .save()
+    .then((result) => {
+      res.json({ applyLoan: result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 // Users Protected Route
