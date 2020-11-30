@@ -30,6 +30,18 @@ router.post("/login-user", async (req, res) => {
   await userLogin(req.body, "user", res);
 });
 
+//Users Dashboard
+router.get("/", userAuth, checkRole(["user"]), (req, res) => {
+  CreateLoan.find()
+    .populate("createdBy", "_id name")
+    .then((loans) => {
+      res.json({ loans });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // Admin Login Route
 router.post("/login-admin", async (req, res) => {
   await userLogin(req.body, "admin", res);

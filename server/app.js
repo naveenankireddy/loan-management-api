@@ -21,6 +21,8 @@ mongoose.connection.on("err", () => {
 require("./models/User");
 require("./models/CreateLoan");
 require("./models/ApplyLoan");
+require("./models/AgentApplyLoan");
+
 //middlewares
 app.use(cors());
 app.use(bp.json());
@@ -32,6 +34,7 @@ require("./middlewares/passport")(passport);
 app.use(express.json());
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/admin"));
+app.use("/api/agent", require("./routes/agent"));
 
 app.listen(PORT, () => {
   console.log("Server is started at", PORT, "CC dug dug dug dug dug.......");
