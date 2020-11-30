@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const CreateLoan = mongoose.model("CreateLoan");
+const loanController = require("../controllers/loan.controller");
+const userController = require("../controllers/user.controller");
+const Loan = mongoose.model("Loan");
 const User = mongoose.model("User");
-const AgentApplyLoan = mongoose.model("AgentApplyLoan");
 
 const {
   userAuth,
@@ -14,87 +15,34 @@ const {
 } = require("../utils/Auth");
 
 //dashboard
-router.get("/", userAuth, checkRole(["admin"]), (req, res) => {
-  AgentApplyLoan.find()
-    .populate("createdBy", "_id name")
-    .then((loans) => {
-      res.json({ loans });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.get("/", userAuth, checkRole(["admin"]), userController.adminDashboard);
 
-router.get("/", userAuth, checkRole(["user"]), (req, res) => {
-  CreateLoan.find()
+//usersList this done by both admin and agent
+router.get("/usersList", userAuth, checkRole(["admin"]), (req, res) => {
+  User.find()
     .populate("createdBy", "_id name")
-    .then((loans) => {
-      res.json({ loans });
+    .then((users) => {
+      res.json({ users });
     })
     .catch((err) => {
-      console.log(err);
+      connsole.log(err);
     });
 });
-
-// create loan this is under admin  survilence one he can create loan
-router.post("/loan/create", userAuth, checkRole(["admin"]), (req, res) => {
-  const { amount, duration, interest } = req.body;
-  if (!amount || !duration || !interest) {
-    return res.status(422).json({ error: "Please provide all fileds" });
-  }
-  req.user.password = undefined;
-  const createLoan = new CreateLoan({
-    amount,
-    duration,
-    interest,
-    createdBy: req.user,
-  });
-  createLoan
-    .save()
-    .then((result) => {
-      res.json({ createLoan: result });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-// router.post(
+//user view this done by both agent and admin
+router.get(
+  "/userView",
+  userAuth,
+  checkRole(["admin", "agent"]),
+  (req, res) => {}
+);
 
 // update loan and this is also done by only admin
-router.put("/loan/:id", userAuth, checkRole(["admin"]), (req, res, next) => {
-  const updateLoan = new CreateLoan({
-    _id: req.params.id,
-    amount: req.body.amount,
-    duration: req.body.duration,
-    interest: req.body.interest,
-    createdBy: req.user,
-    userId: req.body.userId,
-  });
-  updateLoan
-    .updateOne({ _id: req.params.id }, updateLoan)
-    .then(() => {
-      res.status(201).json({
-        message: updateLoan,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
-});
+router.put(
+  "/loan/:id",
+  userAuth,
+  checkRole(["admin"]),
+  loanController.adminUpdateLoan
+);
 //delete a loan and this is also done by admin only
-router.delete("/loan/:id", (req, res, next) => {
-  CreateLoan.deleteOne({ _id: req.params.id })
-    .then(() => {
-      res.status(200).json({
-        message: "Deleted!",
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
-});
+router.delete("/loan/:id", loanController.adminDeleteLoan);
 module.exports = router;

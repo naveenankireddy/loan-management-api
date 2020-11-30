@@ -93,6 +93,7 @@ const userLogin = async (userCredentials, role, res) => {
       email: user.email,
       token: `Bearer ${token}`,
       expiresIn: 168,
+      id: user.id,
     };
 
     return res.status(200).json({

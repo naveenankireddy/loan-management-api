@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema.Types;
-const ApplyLoan = new Schema({
+const LoanApplication = new Schema({
+  amount: {
+    type: Number,
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
   contact: {
     type: String,
     required: true,
@@ -10,16 +18,16 @@ const ApplyLoan = new Schema({
   aadhar: {
     type: String,
     required: true,
-    maxlength: 12,
   },
   address: {
     type: String,
     required: true,
   },
-  createdBy: {
+  customerId: {
     type: ObjectId,
     ref: "User",
+    required: true,
   },
 });
 
-mongoose.model("ApplyLoan", ApplyLoan);
+mongoose.model("LoanApplication", LoanApplication);

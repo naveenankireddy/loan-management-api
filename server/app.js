@@ -19,9 +19,8 @@ mongoose.connection.on("err", () => {
 
 // models
 require("./models/User");
-require("./models/CreateLoan");
-require("./models/ApplyLoan");
-require("./models/AgentApplyLoan");
+require("./models/Loan");
+require("./models/LoanApplication");
 
 //middlewares
 app.use(cors());

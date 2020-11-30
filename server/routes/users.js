@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const ApplyLoan = mongoose.model("ApplyLoan");
+const loanController = require("../controllers/loan.controller");
+const userController = require("../controllers/user.controller");
+
 const {
   userAuth,
   userLogin,
@@ -15,9 +17,33 @@ router.post("/register-user", async (req, res) => {
   await userRegister(req.body, "user", res);
 });
 
+// Users Login Route
+router.post("/login-user", async (req, res) => {
+  await userLogin(req.body, "user", res);
+});
+
+//Users Dashboard
+router.get("/:id", userAuth, checkRole(["user"]), userController.userDashboard);
+
+// Profile Route
+router.get("/profile", userAuth, async (req, res) => {
+  return res.json(serializeUser(req.user));
+});
+//user apply loan
+router.post(
+  "/loan/apply",
+  userAuth,
+  checkRole(["user"]),
+  loanController.userApplyLoan
+);
+
 // Admin Registration Route
 router.post("/register-admin", async (req, res) => {
   await userRegister(req.body, "admin", res);
+});
+// Admin Login Route
+router.post("/login-admin", async (req, res) => {
+  await userLogin(req.body, "admin", res);
 });
 
 // Agent Registration Route
@@ -25,98 +51,9 @@ router.post("/register-agent", async (req, res) => {
   await userRegister(req.body, "agent", res);
 });
 
-// Users Login Route
-router.post("/login-user", async (req, res) => {
-  await userLogin(req.body, "user", res);
-});
-
-//Users Dashboard
-router.get("/", userAuth, checkRole(["user"]), (req, res) => {
-  CreateLoan.find()
-    .populate("createdBy", "_id name")
-    .then((loans) => {
-      res.json({ loans });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-// Admin Login Route
-router.post("/login-admin", async (req, res) => {
-  await userLogin(req.body, "admin", res);
-});
-
 // Agent Login Route
 router.post("/login-agent", async (req, res) => {
   await userLogin(req.body, "agent", res);
 });
-
-// Profile Route
-router.get("/profile", userAuth, async (req, res) => {
-  return res.json(serializeUser(req.user));
-});
-//user apply loan
-router.post("/loan/apply", userAuth, checkRole(["user"]), (req, res) => {
-  const { contact, aadhar, address } = req.body;
-  if (!contact || !aadhar || !address) {
-    return res.status(422).json({ error: "Please provide all fileds" });
-  }
-  req.user.password = undefined;
-  const applyLoan = new ApplyLoan({
-    contact,
-    aadhar,
-    address,
-    createdBy: req.user,
-  });
-  applyLoan
-    .save()
-    .then((result) => {
-      res.json({ applyLoan: result });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-// Users Protected Route
-router.get(
-  "/user-protectd",
-  userAuth,
-  checkRole(["user"]),
-  async (req, res) => {
-    return res.json("Hello User");
-  }
-);
-
-// Admin Protected Route
-router.get(
-  "/admin-protectd",
-  userAuth,
-  checkRole(["admin"]),
-  async (req, res) => {
-    return res.json("Hello Admin");
-  }
-);
-
-// Agent Protected Route
-router.get(
-  "agent-protectd",
-  userAuth,
-  checkRole(["agent"]),
-  async (req, res) => {
-    return res.json("Hello admin");
-  }
-);
-
-// Admin Protected Route
-router.get(
-  "admin-and-agent-protectd",
-  userAuth,
-  checkRole(["admin", "agent"]),
-  async (req, res) => {
-    return res.json("agent and admin");
-  }
-);
 
 module.exports = router;
