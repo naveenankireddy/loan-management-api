@@ -7,6 +7,8 @@ const cors = require("cors");
 const bp = require("body-parser");
 const passport = require("passport");
 
+app.use(cors());
+
 //mongodb connection
 mongoose.connect(MONGOURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -23,7 +25,6 @@ require("./models/Loan");
 require("./models/LoanApplication");
 
 //middlewares
-app.use(cors());
 app.use(bp.json());
 app.use(passport.initialize());
 
